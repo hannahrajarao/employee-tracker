@@ -33,6 +33,9 @@ const inquireUser = async () => {
         else if (action === 'view all roles') {
             viewRoles();
         }
+        else if (action === 'view all employees') {
+            viewEmployees();
+        }
     });
 };
 
@@ -60,6 +63,27 @@ const viewRoles = () => {
         SELECT role.id, role.title, department.name AS department, role.salary 
         FROM role 
         JOIN department ON role.department_id = department.id;`
+    db.query(sql, (err, results) => {
+        console.table(results);
+        return inquireUser();
+    });
+}
+
+const viewEmployees = () => {
+    const sql = `
+    SELECT
+        e.id,
+        e.first_name,
+        e.last_name,
+        r.title AS role,
+        d.name AS department,
+        CONCAT(m.first_name, ' ', m.last_name) AS manager_name
+    FROM
+        employee e
+    LEFT JOIN role r ON e.role_id = r.id
+    LEFT JOIN department d ON r.department_id = d.id
+    LEFT JOIN employee m ON e.manager_id = m.id;
+    `;
     db.query(sql, (err, results) => {
         console.table(results);
         return inquireUser();
