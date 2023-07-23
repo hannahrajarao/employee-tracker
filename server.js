@@ -43,7 +43,7 @@ const db = mysql.createConnection(
         password: process.env.DB_PASSWORD,
         database: 'employee_db'
     },
-    console.log("Connected to employee_db")
+    console.log("Welcome to the Employee Manager!")
 );
 
 inquireUser();
