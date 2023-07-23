@@ -13,8 +13,7 @@ SELECT
   e.last_name,
   r.title AS role,
   d.name AS department,
-  m.first_name AS manager_first_name,
-  m.last_name AS manager_last_name
+  CONCAT(m.first_name, ' ', m.last_name) AS manager_name
 FROM
   employee e
 LEFT JOIN role r ON e.role_id = r.id
