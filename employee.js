@@ -126,12 +126,15 @@ const addRole = () => {
       name: 'salary',
     },
   ]).then((response) => {
+    // get all departments so user can select one
     db.query(`SELECT * FROM department`, (err, results) => {
       if (err)
         console.error(err);
       else {
         const depNames = results.map(({ id, name }) => name)
         const ids = results.map(({ id, name }) => id)
+
+        // present department choices to the user
         inquirer.prompt({
           type: 'list',
           message: 'Which department does the role belong to?',
@@ -140,6 +143,8 @@ const addRole = () => {
         }).then(department => {
           const dep_name = department.department
           const id = ids[depNames.indexOf(dep_name)];
+
+          // insert new role into database
           const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`
           db.query(sql, [response.title, parseInt(response.salary), id], (err2, results2) => {
             if (err2)
@@ -167,12 +172,15 @@ const addEmployee = () => {
       name: 'last_name',
     },
   ]).then(names => {
+    //get role options
     db.query('SELECT * FROM role', (err, roles_results) => {
       if (err)
         console.log(err);
       else {
         const roles = roles_results.map(({ id, title, salary, department_id }) => title);
         const role_ids = roles_results.map(({ id, title, salary, department_id }) => id);
+
+        // present role options to user
         inquirer.prompt({
           type: 'list',
           message: 'What is the employee\'s role?',
@@ -180,10 +188,13 @@ const addEmployee = () => {
           choices: roles,
         }).then(role_response => {
           const role_id = role_ids[roles.indexOf(role_response.role)];
+
+          // get all employees so user can select manager
           db.query('SELECT * FROM employee', (err2, employee_query) => {
             if (err2) console.log(err2);
             const employees_name_choices = employee_query.map(({id, first_name, last_name, role_id, manager_id}) => (first_name+' '+last_name));
             const employee_ids = employee_query.map(({id, first_name, last_name, role_id, manager_id}) => id);
+            // present manager options to user
             inquirer.prompt({
               type: 'list',
               message: 'Who is the employee\'s manager?',
@@ -192,6 +203,8 @@ const addEmployee = () => {
             }).then(manager_response => {
               const manager_index = employees_name_choices.indexOf(manager_response.manager)
               const manager_id = manager_index < 0 ? null : employee_ids[manager_index];
+
+              // insert new employee into database
               const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
               db.query(sql, [names.first_name, names.last_name, role_id, manager_id], (insert_error, insert_results) => {
                 if(insert_error)
