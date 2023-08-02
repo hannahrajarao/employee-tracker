@@ -1,3 +1,3 @@
-const inquireUser = require('./lib/employee.js');
+const inquireUser = require('./employee.js');
 
 inquireUser();

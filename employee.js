@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const db = require('../db/connection.js');
+const db = require('./db/connection.js');
 require('dotenv').config();
 
 const inquireUser = async () => {
